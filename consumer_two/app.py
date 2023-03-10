@@ -17,16 +17,15 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"
 channel = connection.channel()
 channel.exchange_declare(exchange='direct_logs',exchange_type='direct')
 queue = channel.queue_declare(queue='', durable=True)
-channel.queue_bind(exchange='direct_logs',queue=queue.method.queue,routing_key='task_two')
+channel.queue_bind(exchange='direct_logs',queue=queue.method.queue,routing_key='insert_record')
 
 print(' Waiting for messages...')
 
 
 def callback(ch, method, properties, body):
-    print(" Received %s" % json.loads(body))
+    print("Received %s" % json.loads(body))
     insert_into_database(json.loads(body))
-    print(" Done")
-
+    print("Insert operation complete")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 channel.basic_qos(prefetch_count=1)

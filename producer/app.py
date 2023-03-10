@@ -47,24 +47,23 @@ def add_one(test_cmd):
     return " ___ Message Sent: %s" % cmd
 
 
-@app.route('/task2',methods=['POST'])
+@app.route('/insert_record',methods=['POST'])
 def add_two():
     message = {}
     print(request.args)
-    message['Name'] = request.args.get('name')
-    message['SRN'] = request.args.get('srn')
-    message['Section'] = request.args.get('section')
+    message['Name'] = request.args.get('Name')
+    message['SRN'] = request.args.get('SRN')
+    message['Section'] = request.args.get('Section')
     print(message)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"))
     channel = connection.channel()
     channel.exchange_declare(exchange="direct_logs",exchange_type="direct")
-    #channel.queue_declare(queue='task_queue_two', durable=True)
     channel.basic_publish(
         exchange='direct_logs',
-        routing_key='task_two',
+        routing_key='insert_record',
         body = json.dumps(message),
         properties=pika.BasicProperties(
-            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE # make message persistent
+            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
         ))
    
     connection.close()
