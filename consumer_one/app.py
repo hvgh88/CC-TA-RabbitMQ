@@ -6,14 +6,14 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"
 channel = connection.channel()
 channel.exchange_declare(exchange='direct_logs',exchange_type='direct')
 queue=channel.queue_declare(queue='',durable=True)
-channel.queue_bind(exchange='direct_logs',queue=queue.method.queue,routing_key='task_one')
+channel.queue_bind(exchange='direct_logs',queue=queue.method.queue,routing_key='health_check')
 
 print(' Waiting for messages...')
 
 
 def callback(ch, method, properties, body):
-    print(" Received %s" % body.decode())
-    print(" Done")
+    print("Received %s" % body.decode())
+    print("Done")
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
