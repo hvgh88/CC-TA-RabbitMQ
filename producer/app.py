@@ -35,20 +35,13 @@ def read_database():
     return "Records of the DB %s" % list_records
 
 
-@app.route('/task1/<cmd>')
-def add_one(cmd):
+@app.route('/health_check/<test_cmd>')
+def add_one(test_cmd):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"))
     channel = connection.channel()
     channel.exchange_declare(exchange="direct_logs",exchange_type="direct")
-    #channel.queue_declare(queue='task_queue_one', durable=True)
-    channel.basic_publish(exchange="direct_logs",routing_key='task_one',body=cmd,properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE))
-    #channel.basic_publish(
-    #    exchange='',
-    #    routing_key='task_queue_one',
-    #    body=cmd,
-    #    properties=pika.BasicProperties(
-    #        delivery_mode=2,  # make message persistent
-    #    ))
+    channel.basic_publish(exchange="direct_logs", routing_key='health_check',body=test_cmd,properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE))
+
    
     connection.close()
     return " ___ Message Sent: %s" % cmd
@@ -77,7 +70,7 @@ def add_two():
     connection.close()
     return " Added to DB : %s" % message['Name']
 
-@app.route('/Delete/<srn>')
+@app.route('/delete/<srn>')
 def delete_record(srn):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"))
     channel = connection.channel()
