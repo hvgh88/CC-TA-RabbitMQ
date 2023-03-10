@@ -32,7 +32,19 @@ services:
       - RABBITMQ_DEFAULT_PASS=guest
     depends_on:
       - mongo
+
+  consumer_four:
+    build: consumer_four
+    volumes:
+      - ./consumer_four:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    depends_on:
+      - mongo
   
+
   mongo:
     image: mongo
     expose:
