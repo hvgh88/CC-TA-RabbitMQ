@@ -47,7 +47,7 @@ def add_one(test_cmd):
     return " ___ Message Sent: %s" % cmd
 
 
-@app.route('/insert_record',methods=['POST'])
+@app.route('/insert',methods=['POST'])
 def add_two():
     message = {}
     print(request.args)
@@ -77,7 +77,7 @@ def delete_record(srn):
     #channel.queue_declare(queue='task_queue_three', durable=True)
     channel.basic_publish(
         exchange='',
-        routing_key='task_three',
+        routing_key='delete_record',
         body=srn,
         properties=pika.BasicProperties(
             delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE  # make message persistent
