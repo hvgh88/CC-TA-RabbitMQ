@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+
+  consumer_one:
+    build: consumer_one
+    volumes:
+      - ./consumer_one:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  consumer_two:
+    build: consumer_two
+    volumes:
+      - ./consumer_two:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    depends_on:
+      - mongo
+
+  consumer_three:
+    build: consumer_three
+    volumes:
+      - ./consumer_three:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    depends_on:
+      - mongo
+  
+  mongo:
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 27107:27017
+
+  producer:
+    build: producer
+    volumes:
+      - ./producer:/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongo
