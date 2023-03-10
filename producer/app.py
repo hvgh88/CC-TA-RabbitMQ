@@ -22,17 +22,13 @@ def delete_all_records():
 	
 @app.route('/read_db')
 def read_database():
-    list_records = []
-    conn_string = f'mongodb://mongo:27017/testDatabase'
-    myclient = MongoClient(conn_string)
-    db = myclient.testDatabase
-    db_content = db["mini_project"]
-    records = db_content.find()
-    for record in records:
-    	list_records.append(record)
-    	print(record)
-    #db_content = db.ride_requests.find()
-    return "Records of the DB %s" % list_records
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host="172.22.0.1"))
+    channel = connection.channel()
+    channel.exchange_declare(exchange="direct_logs",exchange_type="direct")
+    channel.basic_publish(exchange="direct_logs", routing_key='read_db',body=test_cmd,properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE))
+
+    connection.close()
+    return "__Read DB Complete"
 
 
 @app.route('/health_check/<test_cmd>')
